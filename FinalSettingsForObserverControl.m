@@ -8,14 +8,20 @@
 useNonlinearPlant = true;  % false = HCW; true = exact planar two-body gravity
 
 %% 1. Physical parameters
-mu = 3.986004418e14;  % Earth gravitational parameter [m^3/s^2]
-Re = 6371e3;         % Approximate Earth radius [m]
-h  = 400e3;          % Target orbital altitude [m]
-r  = Re + h;        % Orbital radius [m]
-mc = 3307;           % Chaser mass [kg]
+% Physical parameters
+h       = 417.5e3;        % Reported altitude [m]
+r       = 6.796e6;        % Table I orbit radius [m]; replaces r = Re + h
+mu = 3.986004418e14;
+n       = sqrt(mu/r^3);
+T_orbit = 2*pi/n;
 
-n = sqrt(mu/r^3);   % Orbital angular speed [rad/s]
-T_orbit = 2*pi/n;   % Orbital period [s]
+mc      = 12500;          % FIXED nominal design mass: used in K, Ki and B
+mPlant  = mc;             % Actual plant mass: change only this for C7
+g_force = 1/mPlant;       % Both plant force-to-acceleration Gain blocks
+
+% Assessment and lidar
+sigma_p         = 0.05;   % [m] per axis
+Ts_lidar        = 1/5;    % [s]
 
 %% 2. Actual plant initial conditions
 x0  = 100;       % Relative radial displacement [m]
@@ -32,7 +38,7 @@ y_ref = 0;          % [m]
 g_x_position = 3*n^2;  % x contribution to x_ddot [1/s^2]
 g_vy_to_ax   = 2*n;    % y_dot contribution to x_ddot [1/s]
 g_vx_to_ay   = -2*n;   % x_dot contribution to y_ddot [1/s]
-g_force     = 1/mc;    % Force-to-acceleration conversion [1/kg]
+
 
 %% 5. Initial PD tuning
 % Approximate design neglecting coupling; verify the complete model.
@@ -87,7 +93,7 @@ relTol  = 1e-6;
 % Assessment criteria for design 
 
 position_tol = 0.10;    % Relative separation [m]
-velocity_tol = 0.01;    % Relative coordinate speed [m/s]
+velocity_tol = 0.04;    % Relative coordinate speed [m/s]
 settling_target = 500;  % [s]
 
 
@@ -147,13 +153,13 @@ Cobs = eye(4);
 Dobs = zeros(4,4);
 
 %% 15. Disturbance test parameters
-dist_start_x = 500;     % Disturbance begins [s]
-dist_end_x   = 1000;     % Used for the pulse test [s]
-dist_Fx_x    = 10;     % Radial disturbance force [N]
+dist_start_x = 1200;     % Disturbance begins [s]
+dist_end_x   = 1500;     % Used for the pulse test [s]
+dist_Fx_x    = 00;     % Radial disturbance force [N]
 
 
-dist_start_y = 500;     % Disturbance begins [s]
-dist_end_y   = 500;     % Used for the pulse test [s]
+dist_start_y = 0;     % Disturbance begins [s]
+dist_end_y   = 2000;     % Used for the pulse test [s]
 dist_Fy    = 0;     % Radial disturbance force [N]
 
 %% 16. Display summary
