@@ -153,8 +153,8 @@ Cobs = eye(4);
 Dobs = zeros(4,4);
 
 %% 15. Disturbance test parameters
-dist_start_x = 1200;     % Disturbance begins [s]
-dist_end_x   = 1500;     % Used for the pulse test [s]
+dist_start_x = 500;     % Disturbance begins [s]
+dist_end_x   = 700;     % Used for the pulse test [s]
 dist_Fx_x    = 00;     % Radial disturbance force [N]
 
 
